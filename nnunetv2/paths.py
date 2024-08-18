@@ -1,3 +1,11 @@
+'''
+Author: wuxulong19950206 1287173754@qq.com
+Date: 2024-08-18 21:48:15
+LastEditors: wuxulong19950206 1287173754@qq.com
+LastEditTime: 2024-08-18 21:49:13
+FilePath: \nnUNet\nnUNet\nnunetv2\paths.py
+Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+'''
 #    Copyright 2020 Division of Medical Image Computing, German Cancer Research Center (DKFZ), Heidelberg, Germany
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +29,9 @@ PLEASE READ paths.md FOR INFORMATION TO HOW TO SET THIS UP
 nnUNet_raw = os.environ.get('nnUNet_raw')
 nnUNet_preprocessed = os.environ.get('nnUNet_preprocessed')
 nnUNet_results = os.environ.get('nnUNet_results')
-
+nnUNet_raw = 'nnUNet_raw'
+nnUNet_preprocessed = 'nnUNet_preprocessed'
+nnUNet_results = 'nnUNet_results'
 if nnUNet_raw is None:
     print("nnUNet_raw is not defined and nnU-Net can only be used on data for which preprocessed files "
           "are already present on your system. nnU-Net cannot be used for experiment planning and preprocessing like "

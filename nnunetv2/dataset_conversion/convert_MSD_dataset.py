@@ -71,38 +71,38 @@ def convert_msd_dataset(source_folder: str, overwrite_target_id: Optional[int] =
     maybe_mkdir_p(target_imagesTs)
     maybe_mkdir_p(target_labelsTr)
 
-    with multiprocessing.get_context("spawn").Pool(num_processes) as p:
-        results = []
+    # with multiprocessing.get_context("spawn").Pool(num_processes) as p:
+    #     results = []
 
-        # convert 4d train images
-        source_images = [i for i in subfiles(imagesTr, suffix='.nii.gz', join=False) if
-                         not i.startswith('.') and not i.startswith('_')]
-        source_images = [join(imagesTr, i) for i in source_images]
+    #     # convert 4d train images
+    #     source_images = [i for i in subfiles(imagesTr, suffix='.nii.gz', join=False) if
+    #                      not i.startswith('.') and not i.startswith('_')]
+    #     source_images = [join(imagesTr, i) for i in source_images]
 
-        results.append(
-            p.starmap_async(
-                split_4d_nifti, zip(source_images, [target_imagesTr] * len(source_images))
-            )
-        )
+    #     results.append(
+    #         p.starmap_async(
+    #             split_4d_nifti, zip(source_images, [target_imagesTr] * len(source_images))
+    #         )
+    #     )
 
-        # convert 4d test images
-        source_images = [i for i in subfiles(imagesTs, suffix='.nii.gz', join=False) if
-                         not i.startswith('.') and not i.startswith('_')]
-        source_images = [join(imagesTs, i) for i in source_images]
+    #     # convert 4d test images
+    #     source_images = [i for i in subfiles(imagesTs, suffix='.nii.gz', join=False) if
+    #                      not i.startswith('.') and not i.startswith('_')]
+    #     source_images = [join(imagesTs, i) for i in source_images]
 
-        results.append(
-            p.starmap_async(
-                split_4d_nifti, zip(source_images, [target_imagesTs] * len(source_images))
-            )
-        )
+    #     results.append(
+    #         p.starmap_async(
+    #             split_4d_nifti, zip(source_images, [target_imagesTs] * len(source_images))
+    #         )
+    #     )
 
-        # copy segmentations
-        source_images = [i for i in subfiles(labelsTr, suffix='.nii.gz', join=False) if
-                         not i.startswith('.') and not i.startswith('_')]
-        for s in source_images:
-            shutil.copy(join(labelsTr, s), join(target_labelsTr, s))
+    #     # copy segmentations
+    #     source_images = [i for i in subfiles(labelsTr, suffix='.nii.gz', join=False) if
+    #                      not i.startswith('.') and not i.startswith('_')]
+    #     for s in source_images:
+    #         shutil.copy(join(labelsTr, s), join(target_labelsTr, s))
 
-        [i.get() for i in results]
+    #     [i.get() for i in results]
 
     dataset_json = load_json(dataset_json)
     dataset_json['labels'] = {j: int(i) for i, j in dataset_json['labels'].items()}
@@ -116,17 +116,18 @@ def convert_msd_dataset(source_folder: str, overwrite_target_id: Optional[int] =
 
 def entry_point():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', type=str, required=True,
+    parser.add_argument('-i', type=str, required=False,default='2',
                         help='Downloaded and extracted MSD dataset folder. CANNOT be nnUNetv1 dataset! Example: '
                              '/home/fabian/Downloads/Task05_Prostate')
     parser.add_argument('-overwrite_id', type=int, required=False, default=None,
                         help='Overwrite the dataset id. If not set we use the id of the MSD task (inferred from '
                              'folder name). Only use this if you already have an equivalently numbered dataset!')
-    parser.add_argument('-np', type=int, required=False, default=default_num_processes,
+    parser.add_argument('-np', type=int, required=False, default=1,
                         help=f'Number of processes used. Default: {default_num_processes}')
     args = parser.parse_args()
     convert_msd_dataset(args.i, args.overwrite_id, args.np)
 
 
 if __name__ == '__main__':
+    # entry_point()
     convert_msd_dataset('/home/fabian/Downloads/Task05_Prostate', overwrite_target_id=201)
